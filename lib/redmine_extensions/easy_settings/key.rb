@@ -82,13 +82,18 @@ module EasySettings
   class IntegerKey < Key
 
     def from_params(easy_setting, value)
-      value.try(:to_i)
+      begin
+        return nil if value.nil? || value.to_s.strip.empty?
+        Integer(value)
+      rescue ArgumentError
+        nil
+      end
     end
 
     def validate(easy_setting)
       easy_setting.instance_eval do
         if !value.nil? && !value.is_a?(Integer)
-          errors.add(:base, "#{name} must be inetger")
+          errors.add(:base, "#{name} must be integer")
         end
       end
     end
